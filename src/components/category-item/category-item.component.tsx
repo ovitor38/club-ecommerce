@@ -8,11 +8,13 @@ interface ICategoryItemProps {
 }
 
 const CategoryItem: FunctionComponent<ICategoryItemProps> = ({ category }) => {
+  console.log(category)
+
   return (
     <CategoryItemContainer backgroundImage={category.imageUrl}>
       <CategoryName>
-        <p>{category.displayName}</p>
-        <p>Explorar</p>
+        <p>{category.name}</p>
+        <p>Explore</p>
       </CategoryName>
     </CategoryItemContainer>
   )
