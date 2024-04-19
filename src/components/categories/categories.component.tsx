@@ -22,7 +22,7 @@ const Categories = () => {
   }
 
   useEffect(() => {
-    void fetchCategories()
+    fetchCategories()
   }, [])
 
   return (
