@@ -3,7 +3,7 @@ const { getFirestore } = require('firebase/firestore')
 const { initializeApp } = require('firebase/app')
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBTZJ91HKOLcPQ9nGXWfe1hvenX6zsAgGQ',
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: 'club-ecommerce-5af54.firebaseapp.com',
   projectId: 'club-ecommerce-5af54',
   storageBucket: 'club-ecommerce-5af54.appspot.com',
