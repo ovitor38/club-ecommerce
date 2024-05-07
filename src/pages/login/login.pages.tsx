@@ -15,15 +15,43 @@ import CustomInput from '../../components/custom-input/custom-input.component'
 import { useForm } from 'react-hook-form'
 import InputErrorMessage from '../../components/input-error-message/input-error-message.component'
 import validator from 'validator'
+import {
+  AuthError,
+  AuthErrorCodes,
+  signInWithEmailAndPassword
+} from 'firebase/auth'
+import { auth } from '../../config/firebase.config'
+
+interface ILoginForm {
+  email: string
+  password: string
+}
 
 const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
-  } = useForm()
+  } = useForm<ILoginForm>()
 
-  const handleSubmitPress = (data: any) => {}
+  const handleSubmitPress = async (data: ILoginForm) => {
+    try {
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      )
+
+      console.log({ userCredentials })
+    } catch (error) {
+      const _error = error as AuthError
+
+      if (_error.code === AuthErrorCodes.INVALID_LOGIN_CREDENTIALS) {
+        return setError('email', { type: 'notFound' })
+      }
+    }
+  }
 
   return (
     <>
@@ -52,6 +80,12 @@ const LoginPage = () => {
             />
             {errors?.email?.type === 'required' && (
               <InputErrorMessage>O E-mail é obrigatório</InputErrorMessage>
+            )}
+
+            {errors?.email?.type === 'notFound' && (
+              <InputErrorMessage>
+                E-mail e/ou senha inválido(s)
+              </InputErrorMessage>
             )}
 
             {errors?.email?.type === 'validate' && (
