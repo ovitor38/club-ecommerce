@@ -6,11 +6,11 @@ import {
 import Category from '../types/category.types'
 
 export const categoryConverter = {
-  toFirestore (category: Category): DocumentData {
+  toFirestore(category: Category): DocumentData {
     return { ...category }
   },
 
-  fromFirestore (
+  fromFirestore(
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Category {
