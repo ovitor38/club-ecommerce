@@ -18,9 +18,11 @@ import validator from 'validator'
 import {
   AuthError,
   AuthErrorCodes,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signInWithPopup
 } from 'firebase/auth'
-import { auth } from '../../config/firebase.config'
+import { auth, db, googleProvider } from '../../config/firebase.config'
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 
 interface ILoginForm {
   email: string
@@ -53,6 +55,31 @@ const LoginPage = () => {
     }
   }
 
+  const handleSignInWithGooglePress = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+
+      const querySnapshot = await getDocs(
+        query(collection(db, 'users'), where('id', '==', result?.user.uid))
+      )
+      const user = querySnapshot.docs[0]?.data()
+
+      if (!user) {
+        const firstName = result.user.displayName?.split(' ')[0]
+        const lastName = result.user.displayName?.split(' ')[1]
+        await addDoc(collection(db, 'users'), {
+          id: result.user.uid,
+          email: result.user.email,
+          firstName,
+          lastName,
+          provider: 'google'
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <Header />
@@ -61,7 +88,10 @@ const LoginPage = () => {
         <LoginContent>
           <LoginHeadline>Entre com a sua conta</LoginHeadline>
 
-          <CustomButton startIcon={<BsGoogle size={18} />}>
+          <CustomButton
+            startIcon={<BsGoogle size={18} />}
+            onClick={handleSignInWithGooglePress}
+          >
             Entrar com o Goolge
           </CustomButton>
           <LoginSubtitle>Ou entre com seu e-mail</LoginSubtitle>
