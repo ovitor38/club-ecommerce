@@ -1,3 +1,5 @@
+import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FiLogIn } from 'react-icons/fi'
 import { useForm } from 'react-hook-form'
 import validator from 'validator'
@@ -20,6 +22,7 @@ import {
   SignUpInputContainer
 } from './sign-up.style'
 import { auth, db } from '../../config/firebase.config'
+import { USerContext } from '../../context/user.context'
 
 interface ISignUpForm {
   firstName: string
@@ -30,6 +33,16 @@ interface ISignUpForm {
 }
 
 const SignUpPage = () => {
+  const { isAuthenticated } = useContext(USerContext)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated])
+
   const {
     register,
     handleSubmit,
