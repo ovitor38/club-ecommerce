@@ -3,20 +3,23 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/home/home.pages'
 import LoginPage from './pages/login/login.pages'
 import SignUpPage from './pages/sign-up/sign-up.pages'
-import { useContext } from 'react'
+import { FunctionComponent, useContext, useState } from 'react'
 import { USerContext } from './context/user.context'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from './config/firebase.config'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 
-const App = () => {
+const App: FunctionComponent = () => {
+  const [isInitializing, setIsInitialing] = useState(true)
+
   const { isAuthenticated, loginUser, logoutUser } = useContext(USerContext)
 
   onAuthStateChanged(auth, async (user) => {
     const isSiginingOut = isAuthenticated && !user
 
     if (isSiginingOut) {
-      return logoutUser()
+      logoutUser()
+      return setIsInitialing(false)
     }
 
     const isSigningIn = !isAuthenticated && user
@@ -27,9 +30,16 @@ const App = () => {
       )
       const userFromFireStore = querySnaphot.docs[0]?.data()
 
-      return loginUser(userFromFireStore as any)
+      loginUser(userFromFireStore as any)
+      return setIsInitialing(false)
     }
+
+    return setIsInitialing(false)
   })
+
+  if (isInitializing) {
+    return null
+  }
 
   return (
     <BrowserRouter>
