@@ -9,6 +9,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from './config/firebase.config'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { userConverter } from './converters/firestore.converters'
+import Loading from './components/loading/loading.component'
 
 const App: FunctionComponent = () => {
   const [isInitializing, setIsInitialing] = useState(true)
@@ -42,7 +43,7 @@ const App: FunctionComponent = () => {
   })
 
   if (isInitializing) {
-    return null
+    return <Loading />
   }
 
   return (
