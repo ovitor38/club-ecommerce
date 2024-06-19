@@ -1,13 +1,8 @@
-import { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent } from 'react'
 import { InputErrorMessageContainer } from './input-error-message.style'
+import { ICommonProps } from '../../common/interfaces'
 
-interface InputErrorMessageProps {
-  children: ReactNode
-}
-
-const InputErrorMessage: FunctionComponent<InputErrorMessageProps> = ({
-  children
-}) => {
+const InputErrorMessage: FunctionComponent<ICommonProps> = ({ children }) => {
   return <InputErrorMessageContainer>{children}</InputErrorMessageContainer>
 }
 

@@ -1,9 +1,6 @@
-import { FunctionComponent, ReactNode, createContext, useState } from 'react'
+import { FunctionComponent, createContext, useState } from 'react'
 import IUser from '../types/user.types'
-
-interface IUserContextProviderProps {
-  children: ReactNode
-}
+import { ICommonProps } from '../common/interfaces'
 
 interface IUserContext {
   currentUser: IUser | null
@@ -18,9 +15,7 @@ export const USerContext = createContext<IUserContext>({
   logoutUser: () => {}
 })
 
-const UserContextProvider: FunctionComponent<IUserContextProviderProps> = ({
-  children
-}) => {
+const UserContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
   const [currentUser, setCurrentUSer] = useState<IUser | null>(null)
 
   const isAuthenticated = currentUser !== null
