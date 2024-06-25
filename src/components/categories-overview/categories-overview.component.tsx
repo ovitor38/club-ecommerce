@@ -1,8 +1,23 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useContext, useEffect } from 'react'
 import { Container } from './categories-overview.style'
+import { CategoryContext } from '../../context/category.context'
 
-const CateriesOverview: FunctionComponent = () => {
-  return <Container></Container>
+const CategoriesOverview: FunctionComponent = () => {
+  const { categories, fetchCategories } = useContext(CategoryContext)
+
+  useEffect(() => {
+    if (categories.length === 0) {
+      fetchCategories()
+    }
+  }, [])
+
+  return (
+    <Container>
+      {categories.map((category) => (
+        <p key={category.id}>{category.displayName}</p>
+      ))}
+    </Container>
+  )
 }
 
-export default CateriesOverview
+export default CategoriesOverview
