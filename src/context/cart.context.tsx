@@ -8,7 +8,7 @@ export interface ICartContext {
   toogleCart: () => void
 }
 
-const CartContext = createContext<ICartContext>({
+export const CartContext = createContext<ICartContext>({
   isVisible: false,
   products: [],
   toogleCart: () => {}
