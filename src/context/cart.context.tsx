@@ -1,4 +1,4 @@
-import { createContext, FunctionComponent, useState } from 'react'
+import { createContext, FunctionComponent, useMemo, useState } from 'react'
 import { ICartProduct } from '../types/cart.types'
 import { ICommonProps } from '../common/interfaces'
 import IProduct from '../types/product.type'
@@ -6,6 +6,7 @@ import IProduct from '../types/product.type'
 export interface ICartContext {
   isVisible: boolean
   products: ICartProduct[]
+  productsTotalPrice: string
   toogleCart: () => void
   addProductToCart: (product: IProduct) => void
   removeProductFromCart: (productId: string) => void
@@ -16,6 +17,7 @@ export interface ICartContext {
 export const CartContext = createContext<ICartContext>({
   isVisible: false,
   products: [],
+  productsTotalPrice: '',
   toogleCart: () => {},
   addProductToCart: (product: IProduct) => {},
   removeProductFromCart: (productId: string) => {},
@@ -76,6 +78,14 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
     )
   }
 
+  const productsTotalPrice = useMemo(() => {
+    const value = products.reduce((acc, { price, quantity }) => {
+      return acc + Number(price) * quantity
+    }, 0)
+
+    return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+  }, [products])
+
   return (
     <CartContext.Provider
       value={{
@@ -85,7 +95,8 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
         addProductToCart,
         removeProductFromCart,
         increaseProductQuantity,
-        decreaseProductQuantity
+        decreaseProductQuantity,
+        productsTotalPrice
       }}
     >
       {children}
