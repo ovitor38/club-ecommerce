@@ -7,6 +7,7 @@ export interface ICartContext {
   isVisible: boolean
   products: ICartProduct[]
   productsTotalPrice: string
+  totalProductsCount: number
   toogleCart: () => void
   addProductToCart: (product: IProduct) => void
   removeProductFromCart: (productId: string) => void
@@ -18,6 +19,7 @@ export const CartContext = createContext<ICartContext>({
   isVisible: false,
   products: [],
   productsTotalPrice: '',
+  totalProductsCount: 0,
   toogleCart: () => {},
   addProductToCart: (product: IProduct) => {},
   removeProductFromCart: (productId: string) => {},
@@ -86,6 +88,12 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
     return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
   }, [products])
 
+  const totalProductsCount = useMemo(() => {
+    return products.reduce((acc, { quantity }) => {
+      return acc + quantity
+    }, 0)
+  }, [products])
+
   return (
     <CartContext.Provider
       value={{
@@ -96,7 +104,8 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
         removeProductFromCart,
         increaseProductQuantity,
         decreaseProductQuantity,
-        productsTotalPrice
+        productsTotalPrice,
+        totalProductsCount
       }}
     >
       {children}
