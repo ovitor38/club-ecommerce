@@ -1,4 +1,10 @@
-import { createContext, FunctionComponent, useMemo, useState } from 'react'
+import {
+  createContext,
+  FunctionComponent,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { ICartProduct } from '../types/cart.types'
 import { ICommonProps } from '../common/interfaces'
 import IProduct from '../types/product.type'
@@ -29,9 +35,30 @@ export const CartContext = createContext<ICartContext>({
 
 const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [products, setProducts] = useState<ICartProduct[]>([])
+  const [products, setProducts] = useState<ICartProduct[]>(() => {
+    const savedProducts = localStorage.getItem('cartProducts')
+    return savedProducts ? JSON.parse(savedProducts) : []
+  })
 
-  const toogleCart = () => {
+  useEffect(() => {
+    localStorage.setItem('cartProducts', JSON.stringify(products))
+  }, [products])
+
+  const productsTotalPrice = useMemo(() => {
+    const value = products.reduce((acc, { price, quantity }) => {
+      return acc + Number(price) * quantity
+    }, 0)
+
+    return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+  }, [products])
+
+  const totalProductsCount = useMemo(() => {
+    return products.reduce((acc, { quantity }) => {
+      return acc + quantity
+    }, 0)
+  }, [products])
+
+  const toogleCart = (): void => {
     setIsVisible((prevState) => !prevState)
   }
 
@@ -79,20 +106,6 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
         .filter((product) => product.quantity > 0)
     )
   }
-
-  const productsTotalPrice = useMemo(() => {
-    const value = products.reduce((acc, { price, quantity }) => {
-      return acc + Number(price) * quantity
-    }, 0)
-
-    return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-  }, [products])
-
-  const totalProductsCount = useMemo(() => {
-    return products.reduce((acc, { quantity }) => {
-      return acc + quantity
-    }, 0)
-  }, [products])
 
   return (
     <CartContext.Provider
