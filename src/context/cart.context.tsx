@@ -19,6 +19,7 @@ export interface ICartContext {
   removeProductFromCart: (productId: string) => void
   increaseProductQuantity: (productId: string) => void
   decreaseProductQuantity: (productId: string) => void
+  clearCart: () => void
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -30,7 +31,8 @@ export const CartContext = createContext<ICartContext>({
   addProductToCart: (product: IProduct) => {},
   removeProductFromCart: (productId: string) => {},
   increaseProductQuantity: (productId: string) => {},
-  decreaseProductQuantity: (productId: string) => {}
+  decreaseProductQuantity: (productId: string) => {},
+  clearCart: () => {}
 })
 
 const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
@@ -107,6 +109,10 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
     )
   }
 
+  const clearCart = () => {
+    setProducts([])
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -118,7 +124,8 @@ const CartContextProvider: FunctionComponent<ICommonProps> = ({ children }) => {
         increaseProductQuantity,
         decreaseProductQuantity,
         productsTotalPrice,
-        totalProductsCount
+        totalProductsCount,
+        clearCart
       }}
     >
       {children}
