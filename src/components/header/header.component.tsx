@@ -8,15 +8,18 @@ import {
 } from './header.style'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
-import { USerContext } from '../../context/user.context'
-import { auth } from '../../config/firebase.config'
-import { signOut } from 'firebase/auth'
 import { CartContext } from '../../context/cart.context'
+import { useSelector, useDispatch } from 'react-redux'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../config/firebase.config'
 
 const Header = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const { isAuthenticated } = useContext(USerContext)
+  const { isAuthenticated } = useSelector(
+    (rootReducer: any) => rootReducer.userReducer
+  )
   const { toogleCart, totalProductsCount } = useContext(CartContext)
 
   const handleLoginClick = () => {
@@ -32,7 +35,12 @@ const Header = () => {
   }
 
   const handleExplorerClick = () => {
-    navigate('explore')
+    navigate('/explore')
+  }
+
+  const handleSignOutClick = () => {
+    dispatch({ type: 'LOGOUT_USER' })
+    signOut(auth)
   }
 
   return (
@@ -49,7 +57,7 @@ const Header = () => {
         )}
 
         {isAuthenticated && (
-          <HeaderItem onClick={() => signOut(auth)}>Sair</HeaderItem>
+          <HeaderItem onClick={handleSignOutClick}>Sair</HeaderItem>
         )}
         <HeaderItem onClick={toogleCart}>
           <BsCart3 size={25} />
